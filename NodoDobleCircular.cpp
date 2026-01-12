@@ -2,53 +2,53 @@
 using namespace std;
 
 class Node {
-public:
+  public:
     int data;
-    Node* next;
-
-    Node(int x) {
-        data = x;
+    Node *next;
+    Node *prev;
+    Node(int val) {
+        data = val;
         next = nullptr;
+        prev = nullptr;
     }
 };
 
-Node* agregarNodoAlFinal(Node* nodo, int valor){
+Node* agregarNodoAlFinal(Node* nodo, int dato){
 
-    if (nodo == nullptr) {
-        Node* nuevo= new Node(valor);
-        nuevo -> next= nuevo;
-        return nuevo;
-    }
+    if(nodo==nullptr){
+        Node* nuevo= new Node(dato);
+        nuevo->next = nuevo;
+        nuevo->prev = nuevo;
+        return nuevo;}
 
-    Node* actual = nodo;
+    Node* actual=nodo;
 
-    while(actual-> next != nodo){
-        actual= actual -> next;}
+    while(actual -> next!=nodo){
+        actual=actual -> next;}
 
-    Node* nuevo = new Node(valor);
+    Node* nuevo= new Node(dato);
 
-    actual -> next= nuevo;
-    nuevo-> next= nodo;
+    actual -> next = nuevo;
+    nuevo -> prev = actual;
+    nuevo -> next= nodo;
+    nodo-> prev = nuevo;
 
-    return nodo;
-}
+    return nodo;}
 
-bool buscarUnNodo(Node* nodo, int valor){
 
-    if (nodo == nullptr) {
+bool buscarUnNodo(Node* nodo, int dato){
+
+    if(nodo== nullptr){
         return false;}
 
     Node* actual = nodo;
 
-    do {
-        if (actual->data == valor) {
+    do{
+        if(actual-> data==dato){
             return true;}
-            
-        actual = actual->next;
-    } while (actual != nodo);
-
-    return false;
-}
+        
+        actual= actual -> next;}while(actual!=nodo);
+    return false;}
 
 Node* eliminarNodo(Node* nodo, int posicion){
 
@@ -60,31 +60,26 @@ Node* eliminarNodo(Node* nodo, int posicion){
         return nullptr;}
 
     Node* actual = nodo;
-    Node* previo = nullptr;
 
     if (posicion == 1) {
 
-        while (actual->next != nodo) {
-            actual = actual->next;}
+        Node* ultimo = nodo->prev;
+        ultimo->next = nodo->next;
+        nodo->next->prev = ultimo;
 
         Node* temp = nodo;
-        actual->next = nodo->next;
         nodo = nodo->next;
         delete temp;
-
         return nodo;}
 
-    actual = nodo;
-    
     for (int i = 1; i < posicion; i++) {
-        previo = actual;
         actual = actual->next;
 
         if (actual == nodo) {
             return nodo;}}
 
-    previo->next = actual->next;
+    actual->prev->next = actual->next;
+    actual->next->prev = actual->prev;
     delete actual;
-
     return nodo;}
 
